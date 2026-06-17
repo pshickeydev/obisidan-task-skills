@@ -1,0 +1,75 @@
+# Obsidian Task Skills
+
+Skills for managing tasks and daily journals in an Obsidian vault via MCP.
+
+## Vault Location
+
+Configure the vault path in your Obsidian MCP server (e.g., `~/Documents/MyVault/`).
+
+## Task Frontmatter Template
+
+All 9 fields are required on every task note:
+
+```yaml
+title: ""
+status: ""        # open | doing | done | cancelled
+priority: ""      # highest | high | medium | low
+created_date: ""  # YYYY-MM-DD
+due_date: ""
+completed_date: ""
+cancelled_date: ""
+jira_link: ""
+tags: []
+```
+
+## Filename Patterns
+
+- Jira-linked: `{jira-key-lower}-{title-slug}.md` (e.g. `proj-123-fix-login-timeout.md`)
+- Standalone: `{descriptive-slug}.md`
+- All task notes live in the `tasks/` directory
+
+## Journal Format
+
+Journals live at `journals/YYYY-MM-DD.md`. The template has two sections:
+
+```markdown
+# YYYY-MM-DD
+
+## Tasks:
+- [ ] [[task-slug]]
+
+## Notes:
+-
+```
+
+- Some older journals use `Targets:` instead of `Tasks:` — preserve whichever header exists, don't rename it.
+- The `Tasks:` section is owned by task skills (`task-create`, `task-daily`, `task-status`, `task-sync-jira`).
+- The `Notes:` section is owned by the `journal-note` skill.
+
+## Journal Safety Rule
+
+**NEVER use `write_note` on a journal file that already exists.** Journals accumulate user-written content throughout the day. Using `write_note` (mode `overwrite`) would destroy that content. Only use `patch_note` to modify existing journals. `write_note` is permitted ONLY when `read_note` confirms the journal does not exist yet.
+
+## Jira Domain
+
+By default, Jira links use `https://yourcompany.atlassian.net`. Update the domain in the skill files if your instance differs.
+
+## Priority Mapping from Jira
+
+| Jira priority | Obsidian priority |
+|---------------|-------------------|
+| Critical, Blocker | highest |
+| Major | high |
+| Medium, Normal | medium |
+| Minor, Low, Trivial | low |
+| (missing) | medium |
+
+## Obsidian MCP Tool Gotchas
+
+- `get_notes_info` returns file metadata only (size, modified date) — NOT frontmatter field values. Do not use it to read status, priority, etc.
+- `search_notes` with `searchFrontmatter: true` does fuzzy text matching, not exact field matching. Do not use it to filter by specific frontmatter values — it returns false positives.
+- `search_notes` is capped at `limit: 20` max results.
+- `read_multiple_notes` accepts max 10 paths per call. Always pass `includeContent: false` when only frontmatter is needed.
+- `patch_note` cannot replace with empty string — use a single space if needed.
+
+**Reliable pattern:** Use `read_multiple_notes` (includeContent: false) in batches of 10, then filter in-memory. Do not pre-filter with `get_notes_info` or `search_notes`.
