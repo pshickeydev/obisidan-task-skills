@@ -1,3 +1,4 @@
 .crush/crush.db
 .crush/logs/
-CLAUDE.md
+AGENTS.md
+!AGENTS.md.example

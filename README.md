@@ -14,6 +14,7 @@ These skills give any compatible AI coding agent a lightweight personal task boa
 | **task-daily** | Create or refresh today's daily journal with active tasks |
 | **task-sync-jira** | Batch import tasks from a Jira JQL query |
 | **journal-note** | Append freeform notes to today's journal |
+| **journal-organize** | Group flat journal notes into themed topic sub-sections |
 
 ## Prerequisites
 
@@ -46,7 +47,7 @@ Skills live in `.agents/skills/` with symlinks for agent-specific discovery:
 
 ### 3. Configure project context
 
-Copy `CLAUDE.md.example` to `CLAUDE.md` and fill in your vault path and Jira domain. This file contains vault conventions, the task frontmatter schema, filename patterns, journal format rules, and critical safety rules (e.g., never overwriting existing journals). It is agent-agnostic despite the filename — it serves as the shared project context. `CLAUDE.md` is gitignored so your personal config stays local.
+Copy `AGENTS.md.example` to `AGENTS.md` and fill in your vault path and Jira domain. This file contains vault conventions, the task frontmatter schema, filename patterns, journal format rules, and critical safety rules (e.g., never overwriting existing journals). `AGENTS.md` is gitignored so your personal config stays local.
 
 ### 4. Set up MCP servers
 
@@ -105,7 +106,7 @@ Journals live at `journals/YYYY-MM-DD.md`:
 ```
 
 - The **Tasks** section is managed by task skills (`task-create`, `task-daily`, `task-status`, `task-sync-jira`).
-- The **Notes** section is managed by `journal-note`.
+- The **Notes** section is managed by `journal-note` (appending) and `journal-organize` (grouping into topic sub-sections).
 - Older journals may use `Targets:` instead of `Tasks:` — skills detect and preserve the existing header.
 
 ## Usage Examples
@@ -126,7 +127,7 @@ Note: discussed rollout timeline with the team
 
 ### Jira domain
 
-By default, Jira links use `https://yourcompany.atlassian.net`. To use a different instance, update the `jira_link` URL construction in the relevant `SKILL.md` files and in `CLAUDE.md`.
+By default, Jira links use `https://yourcompany.atlassian.net`. To use a different instance, update the `jira_link` URL construction in the relevant `SKILL.md` files and in `AGENTS.md`.
 
 ### Priority mapping
 
@@ -149,7 +150,7 @@ To support a new AI agent:
 1. Create a dotfile directory for the agent (e.g., `.myagent/`)
 2. Symlink skills: `ln -s ../.agents/skills .myagent/skills`
 3. Configure the agent to discover skills from that directory
-4. Copy `CLAUDE.md.example` to `CLAUDE.md` and fill in your vault path and Jira domain
+4. Copy `AGENTS.md.example` to `AGENTS.md` and fill in your vault path and Jira domain
 
 The skill definitions in `.agents/skills/` are agent-agnostic — each `SKILL.md` uses a standard structure:
 

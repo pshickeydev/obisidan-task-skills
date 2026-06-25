@@ -44,7 +44,7 @@ Journals live at `journals/YYYY-MM-DD.md`. The template has two sections:
 
 - Some older journals use `Targets:` instead of `Tasks:` — preserve whichever header exists, don't rename it.
 - The `Tasks:` section is owned by task skills (`task-create`, `task-daily`, `task-status`, `task-sync-jira`).
-- The `Notes:` section is owned by the `journal-note` skill.
+- The `Notes:` section is owned by `journal-note` (appending) and `journal-organize` (grouping into topic sub-sections).
 
 ## Journal Safety Rule
 
