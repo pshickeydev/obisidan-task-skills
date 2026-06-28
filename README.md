@@ -2,7 +2,7 @@
 
 AI agent skills for managing tasks and daily journals in an [Obsidian](https://obsidian.md/) vault via MCP (Model Context Protocol).
 
-These skills give any compatible AI coding agent a lightweight personal task board — create tasks (optionally linked to Jira), track status, maintain daily journals, and sync backlogs — all stored as plain Markdown files in your Obsidian vault.
+These skills give any compatible AI coding agent a lightweight personal task board — create tasks (optionally linked to Jira), track status, maintain daily journals, generate weekly summaries with topic-based backlinking, and sync backlogs — all stored as plain Markdown files in your Obsidian vault.
 
 ## Skills
 
@@ -15,6 +15,7 @@ These skills give any compatible AI coding agent a lightweight personal task boa
 | **task-sync-jira** | Batch import tasks from a Jira JQL query |
 | **journal-note** | Append freeform notes to today's journal |
 | **journal-organize** | Group flat journal notes into themed topic sub-sections |
+| **journal-weekly** | Generate a weekly summary grouped by topic with backlinks to journals and topic notes |
 
 ## Prerequisites
 
@@ -64,9 +65,27 @@ The skills expect this directory layout inside your Obsidian vault:
 vault/
 ├── tasks/              ← task notes (one file per task)
 ├── journals/           ← daily journals (YYYY-MM-DD.md)
+├── summaries/          ← weekly summaries (YYYY-Www.md)
+├── topics/             ← topic notes for cross-week aggregation
 └── templates/
-    └── daily.md        ← journal template with {{date:YYYY-MM-DD}} placeholder
+    ├── daily.md        ← journal template with {{date:YYYY-MM-DD}} placeholder
+    ├── task.md         ← task note frontmatter schema
+    ├── weekly.md       ← weekly summary template
+    └── topic.md        ← topic note template
 ```
+
+## Templates
+
+Skills read templates from the vault's `templates/` directory at runtime to create new files. Templates are never hardcoded in skill procedures — customize them to change the output format without modifying skill definitions.
+
+| Template | Used by | Purpose |
+|----------|---------|---------|
+| `templates/daily.md` | `task-daily`, `task-create`, `task-sync-jira`, `journal-note` | Daily journal scaffold |
+| `templates/task.md` | `task-create`, `task-sync-jira` | Task note frontmatter schema |
+| `templates/weekly.md` | `journal-weekly` | Weekly summary scaffold |
+| `templates/topic.md` | `journal-weekly` | Topic note template |
+
+If a required template is missing when a skill runs, the skill will inform you and stop.
 
 ## Task Schema
 
@@ -106,7 +125,7 @@ Journals live at `journals/YYYY-MM-DD.md`:
 ```
 
 - The **Tasks** section is managed by task skills (`task-create`, `task-daily`, `task-status`, `task-sync-jira`).
-- The **Notes** section is managed by `journal-note` (appending) and `journal-organize` (grouping into topic sub-sections).
+- The **Notes** section is managed by `journal-note` (appending) and `journal-organize` (grouping into topic sub-sections). Read by `journal-weekly` to generate weekly summaries.
 - Older journals may use `Targets:` instead of `Tasks:` — skills detect and preserve the existing header.
 
 ## Usage Examples
@@ -121,6 +140,9 @@ Mark proj-123 done
 Start my day
 Sync tasks from Jira project PROJ
 Note: discussed rollout timeline with the team
+Wrap up the week
+Generate a weekly summary for 2026-W26
+Review last week's notes
 ```
 
 ## Customization

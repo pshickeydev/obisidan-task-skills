@@ -70,23 +70,17 @@ Use the Obsidian `list_directory` tool on `tasks/`.
 
 ### Step 5 — Write the task note
 
-Use the Obsidian `write_note` tool with path `tasks/{slug}.md`, mode `overwrite`:
-
-**Frontmatter** — populate all 9 fields:
-
-```yaml
-title: "{title from Jira summary or freeform input}"
-status: "open"
-priority: "{mapped priority}"
-created_date: "{today YYYY-MM-DD}"
-due_date: ""
-completed_date: ""
-cancelled_date: ""
-jira_link: "{URL or empty string}"
-tags: [{from Jira labels, lowercased, or empty array}]
-```
-
-**Body** — one-line description matching the title, ending with a period.
+1. Read `templates/task.md` using the Obsidian `read_note` tool. If the template does not exist, inform the user and stop.
+2. Populate the frontmatter fields from the template:
+   - `title`: from Jira summary or freeform input
+   - `status`: `"open"`
+   - `priority`: mapped priority from Step 2 or Step 3
+   - `created_date`: today's date `YYYY-MM-DD`
+   - `jira_link`: URL from Step 2 or empty string for freeform
+   - `tags`: from Jira labels (lowercased) or empty array
+   - Leave `due_date`, `completed_date`, `cancelled_date` as empty strings
+3. Set the body to a one-line description matching the title, ending with a period.
+4. Write to `tasks/{slug}.md` using the Obsidian `write_note` tool.
 
 ### Step 6 — Update today's journal
 

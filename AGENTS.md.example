@@ -2,13 +2,28 @@
 
 Skills for managing tasks and daily journals in an Obsidian vault via MCP.
 
+> **Maintenance note:** When updating this file, reflect relevant changes in `README.md` as well. `AGENTS.md` is the authoritative source for agent-facing conventions; `README.md` is the user-facing documentation. Keep them in sync.
+
 ## Vault Location
 
 Configure the vault path in your Obsidian MCP server (e.g., `~/Documents/MyVault/`).
 
+## Templates
+
+Templates live in the vault's `templates/` directory. Skills read these at runtime to create new files — they are never hardcoded in skill procedures. This lets users customize output formats without modifying skill definitions.
+
+| Template | Used by | Purpose |
+|----------|---------|---------|
+| `templates/daily.md` | `task-daily`, `task-create`, `task-sync-jira`, `journal-note` | Daily journal scaffold |
+| `templates/task.md` | `task-create`, `task-sync-jira` | Task note frontmatter schema |
+| `templates/weekly.md` | `journal-weekly` | Weekly summary scaffold |
+| `templates/topic.md` | `journal-weekly` | Topic note frontmatter and structure |
+
+If a required template is missing when a skill runs, the skill will inform the user and stop.
+
 ## Task Frontmatter Template
 
-All 9 fields are required on every task note:
+All 9 fields are required on every task note (defined in `templates/task.md`):
 
 ```yaml
 title: ""
@@ -44,7 +59,15 @@ Journals live at `journals/YYYY-MM-DD.md`. The template has two sections:
 
 - Some older journals use `Targets:` instead of `Tasks:` — preserve whichever header exists, don't rename it.
 - The `Tasks:` section is owned by task skills (`task-create`, `task-daily`, `task-status`, `task-sync-jira`).
-- The `Notes:` section is owned by `journal-note` (appending) and `journal-organize` (grouping into topic sub-sections).
+- The `Notes:` section is owned by `journal-note` (appending) and `journal-organize` (grouping into topic sub-sections). Read (but never modified) by `journal-weekly`.
+
+## Weekly Summaries
+
+Weekly summaries live at `summaries/YYYY-Www.md` (ISO 8601 week numbers). They aggregate the Notes section content from a week's daily journals, grouped by topic, with `[[wikilinks]]` back to source journals and to topic notes. The `summaries/` directory is owned by `journal-weekly`.
+
+## Topic Notes
+
+Topic notes live at `topics/{slug}.md`. They are stub files that accumulate entries from weekly summaries over time, providing cross-week aggregation by topic. Each topic note has `## [[YYYY-Www]]` sections for each week that referenced that topic, newest first. The `topics/` directory is shared — `journal-weekly` is the primary writer. Topic notes should not be manually created with slugs that conflict with auto-generated ones.
 
 ## Journal Safety Rule
 

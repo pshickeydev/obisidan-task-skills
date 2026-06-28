@@ -52,6 +52,8 @@ Ask the user to confirm:
 
 ### Step 5 — Create new task notes
 
+Read `templates/task.md` using the Obsidian `read_note` tool. If the template does not exist, inform the user and stop. Reuse the template for all issues below.
+
 For each confirmed new issue:
 
 1. **Map priority:**
@@ -74,19 +76,14 @@ For each confirmed new issue:
    - Truncate to 60 characters
    - Strip trailing hyphens
 
-4. **Write the note** with the Obsidian `write_note` tool at `tasks/{slug}.md`:
-
-   ```yaml
-   title: "{Jira summary}"
-   status: "open"
-   priority: "{mapped priority}"
-   created_date: "{today YYYY-MM-DD}"
-   due_date: ""
-   completed_date: ""
-   cancelled_date: ""
-   jira_link: "{URL}"
-   tags: [{from Jira labels, lowercased, or empty array}]
-   ```
+4. **Write the note** using the Obsidian `write_note` tool at `tasks/{slug}.md`. Populate the template frontmatter fields:
+   - `title`: Jira summary
+   - `status`: `"open"`
+   - `priority`: mapped priority
+   - `created_date`: today's date `YYYY-MM-DD`
+   - `jira_link`: URL from sub-step 2
+   - `tags`: from Jira labels (lowercased) or empty array
+   - Leave `due_date`, `completed_date`, `cancelled_date` as empty strings
 
    Body: one-line description matching the summary.
 
